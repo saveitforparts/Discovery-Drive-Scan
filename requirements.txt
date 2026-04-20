@@ -1,0 +1,9 @@
+#Package requirements for dd_scan.py, dd_image.py, and dd_preview.py
+
+numpy
+pyserial
+regex
+matplotlib
+pyrtlsdr
+pylab
+keyboard
