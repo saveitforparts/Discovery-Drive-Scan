@@ -54,7 +54,6 @@ Parameters are:
 - -bt Bias Tee enabled (1) or disabled (0)
 - -g Gain for RTL-SDR
 - -p Preview mode enabled (1) or disabled (0)
-- -i Integration time. Shorter should result in a faster scan but possibly less smooth data.
 - -bw Bandwidth of the scan in kHz. 8 is equivalent to Narrow FM, 250 is close to Wideband FM, etc. 
 
 The script will generate two files while it runs. The first is scan-settings-<timestamp>.txt which
@@ -78,7 +77,7 @@ data by running "python3 dd_image.py raw-data-<timestamp>.txt"
 
 Parameters used to scan both GOES-E and GOES-W from Minnesota:
 
-"python3 dd_scan.py -as 140 -ae 250 -es 15 -ee 45 -bt 1 -f 1694.1 -g 20 -p 1 -1 1024 -bw 8"
+"python3 dd_scan.py -as 140 -ae 250 -es 15 -ee 45 -bt 1 -f 1694.1 -g 20 -p 1 -bw 8"
 
 The resulting heatmap is below, showing GOES-19 in the E orbital slot on the left and GOES-18 
 in the W orbital slot on the right. 
