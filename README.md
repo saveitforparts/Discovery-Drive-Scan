@@ -23,6 +23,12 @@ called from dd_scan by flagging the preview option on, Frequencies are depended 
 antenna and feed. I used the Discovery Dish and various feeds, you could also us a Yagi-Uda antenna
 like the Arrow II, or a different directional antenna for other frequencies. 
 
+The related dd_astron.py script uses a longer integration time and compensates for Earth's rotation
+by shifting one degree to the right every 4 minutes. This is useful for longer scans on 1420.4MHz. 
+If you are in the Southern Hemisphere you may wish to edit this to shift one degree left. It has
+a spearate version of the preview script, dd_preview_a.py, which is nearly identical do dd_preview
+but with a 10 minute timeout instead of 5 seconds. 
+
 **Requirements:**
 
 dd_scan uses socket, sys, time, regex, numpy, pyrtlsdr, pylab, argparse, and subprocess. 
