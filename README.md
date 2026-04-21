@@ -69,7 +69,8 @@ data by running "python3 dd_image.py raw-data-<timestamp>.txt"
 **Examples**
 
 Parameters used to scan both GOES-E and GOES-W from Minnesota:
-python3 dd_scan.py -as 140 -ae 250 -es 15 -ee 45 -bt 1 -f 1694.1 -g 20 -p 1 -1 1024 -bw 8
+
+"python3 dd_scan.py -as 140 -ae 250 -es 15 -ee 45 -bt 1 -f 1694.1 -g 20 -p 1 -1 1024 -bw 8"
 
 
 
