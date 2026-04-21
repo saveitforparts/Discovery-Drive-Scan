@@ -38,16 +38,16 @@ prompt you for the remaining scan parameters. In either case you will be told th
 time and asked if you want to continue (y/n). 
 
 Parameters are:
-- as Azimuth start, the beginning of the azimuth range. 
-- ae Azimuth end, the end of the azimuth range
-- es Elevation start
-- ee Elevation end
-- f Frequency of the scan
-- bt Bias Tee enabled (1) or disabled (0)
-- g Gain for RTL-SDR
-- p Preview mode enabled (1) or disabled (0)
-- i Integration time. Shorter should result in a faster scan but possibly less smooth data.
-- bw Bandwidth of the scan in kHz. 8 is equivalent to Narrow FM, 250 is close to Wideband FM, etc. 
+- -as Azimuth start, the beginning of the azimuth range. 
+- -ae Azimuth end, the end of the azimuth range
+- -es Elevation start
+- -ee Elevation end
+- -f Frequency of the scan
+- -bt Bias Tee enabled (1) or disabled (0)
+- -g Gain for RTL-SDR
+- -p Preview mode enabled (1) or disabled (0)
+- -i Integration time. Shorter should result in a faster scan but possibly less smooth data.
+- -bw Bandwidth of the scan in kHz. 8 is equivalent to Narrow FM, 250 is close to Wideband FM, etc. 
 
 The script will generate two files while it runs. The first is scan-settings-<timestamp>.txt which
 records the scan parameters. The second is raw-data-<timestamp>.txt which holds the numpy array of
