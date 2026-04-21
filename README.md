@@ -23,7 +23,7 @@ like the Arrow II, or a different directional antenna for other frequencies.
 
 **Requirements:**
 
-dd_scan uses socket, sys, time, regex, numpy, rtlsd, pylab, argparse, and subprocess. 
+dd_scan uses socket, sys, time, regex, numpy, pyrtlsdr, pylab, argparse, and subprocess. 
 dd_image uses matplotlib. dd_preview uses os and keyboard (keyboard requires running as root). 
 
 Any missing dependencies can be installed by running "pip install -r requirements.txt"
@@ -79,6 +79,16 @@ in the W orbital slot on the right.
 
 **Notes**
 
-The Discovery Dish has a wide beamwidth, so you may get larger signal "blobs" in the heatmaps. Other antennas could
+The Discovery Dish has a wide beamwidth, so you may get larger signal "blobs" in the heatmaps. Other 
+antennas could result in a more focused scan with smaller signal areas. Larger scan ranges can give
+a better overall picture of the sky, but will take longer to complete. 
+
+Medium-Earth-Orbit satellites like GPS, Glonass, Beidou, etc can be imaged with smaller scan ranges
+and/or faster speeds, but may show up as elongated blobs due to motion during the scan. Note that
+some geostationary satellite transmit on GPS L1 for WAAS so may also appear in a scan of GPS
+frequencies alongside the MEO satellites. 
+
+
+
 
 
