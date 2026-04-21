@@ -72,5 +72,13 @@ Parameters used to scan both GOES-E and GOES-W from Minnesota:
 
 "python3 dd_scan.py -as 140 -ae 250 -es 15 -ee 45 -bt 1 -f 1694.1 -g 20 -p 1 -1 1024 -bw 8"
 
+The resulting heatmap is below, showing GOES-19 in the E orbital slot on the left and GOES-18 
+in the W orbital slot on the right. 
+
 ![Example GOES scan](https://github.com/saveitforparts/Discovery-Drive-Scan/blob/main/images/GOES.png)
+
+**Notes**
+
+The Discovery Dish has a wide beamwidth, so you may get larger signal "blobs" in the heatmaps. Other antennas could
+
 
