@@ -6,6 +6,8 @@ Gabe Emerson / Saveitforparts 2026. Email: gabe@saveitforparts.com
 
 Video demo:
 
+![Discovery Drive with Discovery Dish](https://github.com/saveitforparts/Discovery-Drive-Scan/blob/main/images/discovery%20drive.png)
+
 **Introduction:**
 
 This code controls a commercial azimuth/elevation rotor over TCP. It is designed for the KrakenRF
