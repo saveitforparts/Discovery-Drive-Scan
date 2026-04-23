@@ -28,6 +28,7 @@ by shifting one degree to the right every 4 minutes. This is useful for longer s
 If you are in the Southern Hemisphere you may wish to edit this to shift one degree left. It has
 a spearate version of the preview script, dd_preview_a.py, which is nearly identical do dd_preview
 but with a 10 minute timeout instead of 5 seconds. 
+***Note: dd_astron is not fully working, it needs a better integration method***
 
 **Requirements:**
 
