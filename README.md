@@ -4,7 +4,7 @@ Microwave imaging using Discovery Drive from KrakenRF.
 
 Gabe Emerson / Saveitforparts 2026. Email: gabe@saveitforparts.com
 
-Video demo:
+Video demo: (not finished yet)
 
 ![Discovery Drive with Discovery Dish](https://github.com/saveitforparts/Discovery-Drive-Scan/blob/main/images/discovery%20drive.png)
 
