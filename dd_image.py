@@ -35,9 +35,9 @@ cleaned_data = sky_data
 #deal with indexing offset problem
 for row_index in range(0,(el_end-el_start)): #iterate through array
 	if (row_index %2) == 0: #check for scan direction
-		cleaned_data[row_index]=np.roll(cleaned_data[row_index],-4) #shift odd rows right 4 pixels
+		cleaned_data[row_index]=np.roll(cleaned_data[row_index], -4) #shift odd rows right 4 pixels
 	else:
-		cleaned_data[row_index]=np.roll(cleaned_data[row_index],3) #shift even rows left 3 pixels
+		cleaned_data[row_index]=np.roll(cleaned_data[row_index], 3) #shift even rows left 3 pixels
 
 #Trim up sawtooth edges of the array after roll operation
 cleaned_data = np.delete(cleaned_data, obj=(az_end-az_start), axis=1)
