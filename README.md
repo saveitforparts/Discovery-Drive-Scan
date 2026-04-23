@@ -82,6 +82,8 @@ Parameters used to scan both GOES-E and GOES-W from Minnesota:
 The resulting heatmap is below, showing GOES-19 in the E orbital slot on the left and GOES-18 
 in the W orbital slot on the right. 
 
+The raw_data and scan_settings files for this scan can be found in the example data folder. 
+
 ![Example GOES scan](https://github.com/saveitforparts/Discovery-Drive-Scan/blob/main/images/GOES.png)
 
 **Notes**
