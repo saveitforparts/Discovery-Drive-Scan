@@ -14,22 +14,23 @@ with open(sys.argv[1], 'r') as file_name:
 header, *filename_parts = str(file_name).split('-')     
 file_name=str(filename_parts[2])
 header, *split = file_name.split('.')
-timestamp=(filename_parts[1]+'-'+header)
+timestamp= f"{filename_parts[1]}-{header}"
+
 
 print('Loading parameters of scan.')
-scan_params = np.loadtxt("scan-settings-"+timestamp+".txt")
+scan_params = np.loadtxt(f"scan-settings-{timestamp}.txt")
 az_start=int(scan_params[0])
 az_end=int(scan_params[1])
 el_start=int(scan_params[2])
 el_end=int(scan_params[3])
 resolution=int(scan_params[4])
-user_freq=str(round(scan_params[5], 2))
+user_freq=round(scan_params[5], 2)
 bias_tee=int(scan_params[6])
 if bias_tee==1:
 	bias_str="On"
 else:
 	bias_str="Off"
-user_gain=str(scan_params[7])
+user_gain=scan_params[7]
 
 cleaned_data = sky_data
 #deal with indexing offset problem
@@ -71,7 +72,7 @@ plt.colorbar(location='bottom',label='RF Signal Strength (dBm)')
 plt.xlabel("Azimuth")
 plt.ylabel("Elevation")
 plt.suptitle("Discovery Drive Scan "+timestamp)
-plt.title("Frequency: " + user_freq +"MHz, Gain: " + user_gain + ", Bias Tee: "+ bias_str) 
+plt.title(f"Frequency: {user_freq}Mhz, Gain: {user_gain}, Bias Tee: {bias_str}")
 
 plt.show()
 
