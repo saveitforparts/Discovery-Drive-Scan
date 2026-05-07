@@ -58,8 +58,7 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((dd_ip, dd_port))
 client_socket.setblocking(1) #may not be necessary, this should be the default
 	
-print ('Connected to Discovery Drive on ', dd_ip)
-print ('')
+print(f'Connected to Discovery Drive on {dd_ip}\n')
 
 #Prompt for scan parameters, with default values and valid range checks
 if args.azimuthstart is None: #if not already defined via argparse
@@ -181,7 +180,7 @@ print(f"Requesting move to {az_start}, {el_start}")#display requested starting p
 
 #Wait for drive to reach starting position
 while 1:
-	command = ('p').encode('ascii')
+	command = 'p'.encode('ascii')
 	client_socket.send(command)
 	response = client_socket.recv(100)
 	actual_position = response.decode("utf-8").strip().split("\n")
