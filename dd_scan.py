@@ -247,7 +247,7 @@ for elevation in range(el_start, el_end+1):
 #				if (azimuth-1) <= round(current_az) <= (azimuth+1) and (elevation-1) <= round(current_el) <= (elevation+1):
 #					break
 
-	direction = direction + 1  # change sweep direction for each elevation change
+		direction = direction + 1  # change sweep direction for each elevation change
 
 end_time = time.time()  # record end time of scan
 print(f'\nScan complete! View results with: python3 dd_image.py raw-data-{timestr}.txt')
