@@ -73,6 +73,9 @@ if not args.bandwidth == None:
 
 #generate timestamp
 timestr = time.strftime('%Y%m%d-%H%M%S')
+#pre-generate the raw-data filename for simplicity
+raw_data_fname = f"raw-data-{timestr}.txt"
+
 
 #Connect to Discovery Drive via its Wifi hotspot
 dd_ip = '192.168.4.1' #default Discovery Drive IP when connected to onboard hotspot.
@@ -81,8 +84,7 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((dd_ip, dd_port))
 client_socket.setblocking(1) #may not be necessary, this should be the default
 	
-print ('Connected to Discovery Drive on ', dd_ip)
-print ('')
+print(f'Connected to Discovery Drive on {dd_ip}\n')
 
 #Prompt for scan parameters, with default values and valid range checks
 if args.azimuthstart is None: #if not already defined via argparse
@@ -165,7 +167,7 @@ sdr.gain = user_gain
 sdr.set_bias_tee(bias_tee)
 
 resolution = 1 #placeholder for potential future high-res scan, if can do fractional degrees of movement. 
-np.savetxt('scan-settings-' + timestr +'.txt', (az_start,az_end,el_start,el_end,resolution,user_freq,bias_tee,user_gain))	
+np.savetxt(f'scan-settings-{timestr}.txt', (az_start,az_end,el_start,el_end,resolution,user_freq,bias_tee,user_gain))	
 
 
 az_range = az_end - az_start + 1
@@ -178,9 +180,9 @@ time_est = az_range * el_range
 time_output = (time_est*1.2)/60
 time_output = round(time_output, 2)
 if time_output > 60:
-	print ('Estimated scan time with your parameters is ', round(time_output/60, 2), ' hours.')
+	print (f'Estimated scan time with your parameters is {round(time_output/60, 2)} hours.')
 else:
-	print ('Estimated scan time with your parameters is ', time_output, ' minutes.')
+	print (f'Estimated scan time with your parameters is {time_output} minutes.')
 print ('')
 user_confirm = input('Proceed with scan? (y/n):')
 if user_confirm.lower().startswith("y"):
@@ -197,20 +199,21 @@ start_time = time.time() #record start time of scan
 
 #initialize starting dish position
 print ('Moving antenna to starting position...')
-command = ('P ' + str(az_start) + ' ' + str(el_start)).encode('ascii')
+command = f"P {az_start} {el_start}".encode('ascii')
+
 client_socket.send(command)
 response = client_socket.recv(100)
-print('Requesting move to ', az_start, ', ', el_start)  #display requested starting position
+print(f'Requesting move to {az_start}, {el_start}')  #display requested starting position
 
 #Wait for drive to reach starting position
 while 1:
-	command = ('p').encode('ascii')
+	command = 'p'.encode('ascii')
 	client_socket.send(command)
 	response = client_socket.recv(100)
 	actual_position = response.decode("utf-8").strip().split("\n")
 	current_az = float(actual_position[0])
 	current_el = float(actual_position[1])
-	print('Current position: ' + actual_position[0] + ', ' + actual_position[1])
+	print(f'Current position: {actual_position[0]}, {actual_position[1]}')
 	#Actual position might be +/- 1 of requested position
 	if (az_start-1) <= round(current_az) <= (az_start+1) and (el_start-1) <= round(current_el) <= (el_start+1):
 		break
@@ -222,8 +225,8 @@ for i in range (0, round((az_range)/10)+1):
 
 #Spawn preview as separate process 
 if preview_mode == 1:
-	np.savetxt(f"raw-data-" + timestr +".txt", sky_data)
-	subprocess.Popen(['python3', 'dd_preview_a.py', 'raw-data-' + timestr +'.txt']) #call preview script with current data file
+	np.savetxt(raw_data_fname, sky_data)
+	subprocess.Popen(['python3', 'dd_preview_a.py', raw_data_fname]) #call preview script with current data file
 
 
 #Main scanning loop
@@ -253,13 +256,13 @@ for elevation in range (el_start,el_end+1):
 			#record signal data to array
 			sky_data[abs(elevation-el_end),(azimuth-az_end)]=signal_strength
 			#write to text file
-			np.savetxt(f"raw-data-" + timestr +".txt", sky_data)
+			np.savetxt(raw_data_fname, sky_data)
 				
 			#Tell drive to go to next target position
-			command = ('P ' + str(azimuth+shift_amount) + ' ' + str(elevation)).encode('ascii')
+			command = f"P {azimuth+shift_amount} {elevation}".encode('ascii')
 			client_socket.send(command)
 			#response = client_socket.recv(100)
-			print('Requesting move to Azimuth: ', azimuth+shift_amount, ', Elevation: ', elevation)  #display current requested position
+			print(f'Requesting move to Azimuth: {azimuth+shift_amount}, Elevation: {elevation}') #display current requested position
 			
 #			#Wait for drive to reach next position before proceeding
 #           #May want to keep this for Sandland version
@@ -278,8 +281,7 @@ for elevation in range (el_start,el_end+1):
 		direction=direction + 1	#change sweep direction for each elevation change
 
 end_time = time.time() #record end time of scan
-print ('')
-print ('Scan complete! View results with: python3 dd_image.py raw-data-' + timestr +'.txt')
+print (f'\nScan complete! View results with: python3 dd_image.py {raw_data_fname}')
 run_time = round(end_time - start_time)
 print ('Elapsed time: ', round(run_time/60, 2), ' minutes.')      
 
