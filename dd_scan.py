@@ -58,8 +58,7 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((dd_ip, dd_port))
 client_socket.setblocking(1) #may not be necessary, this should be the default
 	
-print ('Connected to Discovery Drive on ', dd_ip)
-print ('')
+print(f'Connected to Discovery Drive on {dd_ip}\n')
 
 #Prompt for scan parameters, with default values and valid range checks
 if args.azimuthstart is None: #if not already defined via argparse
@@ -142,7 +141,7 @@ sdr.gain = user_gain
 sdr.set_bias_tee(bias_tee)
 
 resolution = 1 #placeholder for potential future high-res scan, if can do fractional degrees of movement. 
-np.savetxt('scan-settings-' + timestr +'.txt', (az_start,az_end,el_start,el_end,resolution,user_freq,bias_tee,user_gain))	
+np.savetxt(f"scan-settings-{timestr}.txt", (az_start,az_end,el_start,el_end,resolution,user_freq,bias_tee,user_gain))	
 
 
 az_range = az_end - az_start + 1
@@ -155,10 +154,9 @@ time_est = az_range * el_range
 time_output = (time_est*1.2)/60
 time_output = round(time_output, 2)
 if time_output > 60:
-	print ('Estimated scan time with your parameters is ', round(time_output/60, 2), ' hours.')
+	print(f'Estimated scan time with your parameters is {round(time_output/60, 2)} hours.\n')
 else:
-	print ('Estimated scan time with your parameters is ', time_output, ' minutes.')
-print ('')
+	print(f'Estimated scan time with your parameters is {time_output} minutes.\n')
 user_confirm = input('Proceed with scan? (y/n):')
 if user_confirm.lower().startswith("y"):
 	print ('Scan in progress...')
@@ -170,25 +168,26 @@ else:
 #create 2D array for raw signal strengths
 sky_data = np.zeros((el_range,az_range))
 
-start_time = time.time() #record start time of scan
+start_time = time.time()  # record start time of scan
 
-#initialize starting dish position
-print ('Moving antenna to starting position...')
-command = ('P ' + str(az_start) + ' ' + str(el_start)).encode('ascii')
+# initialize starting dish position
+print('Moving antenna to starting position...')
+
+command = f"P {az_start} {el_start}".encode('ascii')
 client_socket.send(command)
 response = client_socket.recv(100)
-print('Requesting move to ', az_start, ', ', el_start)  #display requested starting position
+print(f"Requesting move to {az_start}, {el_start}")#display requested starting position
 
 #Wait for drive to reach starting position
 while 1:
-	command = ('p').encode('ascii')
+	command = 'p'.encode('ascii')
 	client_socket.send(command)
 	response = client_socket.recv(100)
 	actual_position = response.decode("utf-8").strip().split("\n")
 	current_az = float(actual_position[0])
 	current_el = float(actual_position[1])
-	print('Current position: ' + actual_position[0] + ', ' + actual_position[1])
-	#Actual position might be +/- 1 of requested position
+	print(f"Current position: {actual_position[0]}, {actual_position[1]}")
+	# Actual position might be +/- 1 of requested position
 	if (az_start-1) <= round(current_az) <= (az_start+1) and (el_start-1) <= round(current_el) <= (el_start+1):
 		break
 
@@ -199,36 +198,41 @@ for i in range (0, round((az_range)/10)+1):
 
 #Spawn preview as separate process TODO: see if this affects performance
 if preview_mode == 1:
-	np.savetxt(f"raw-data-" + timestr +".txt", sky_data)
-	subprocess.Popen(['python3', 'dd_preview.py', 'raw-data-' + timestr +'.txt']) #call preview script with current data file
+	np.savetxt(f"raw-data-{timestr}.txt", sky_data)
+	# call preview script with current data file
+	subprocess.Popen(['python3', 'dd_preview.py', f"raw-data-{timestr}.txt"])
 
 
-#Main scanning loop
-direction=1
-for elevation in range (el_start,el_end+1):
-		sdr_bytes = sdr.read_bytes(integration*1024) #avoid blank pixels at start(?)	
+# Main scanning loop
+direction = 1
+for elevation in range(el_start, el_end+1):
+	# avoid blank pixels at start(?)
+	sdr_bytes = sdr.read_bytes(integration*1024)
 
-		for azimuth in range (az_start,az_end):
-			if (direction % 2) == 0: #check for sweep direction
-				azimuth = abs(azimuth-az_end)+az_start-1 #increment backwards on odd numbered loops			
-		
-			#Read RF signal from SDR
-			samples = sdr.read_samples(integration*1024) #grab samples for averaging 
-			signal_strength = 10*log10(var(samples))
-			print('Relative power: ', round(signal_strength, 2),'dB') 
-			
-			#record signal data to array
-			sky_data[abs(elevation-el_end),(azimuth-az_end)]=signal_strength
-			#write to text file
-			np.savetxt(f"raw-data-" + timestr +".txt", sky_data)
-				
-			#Tell drive to go to next target position
-			command = ('P ' + str(azimuth) + ' ' + str(elevation)).encode('ascii')
-			client_socket.send(command)
-			#response = client_socket.recv(100)
-			print('Requesting move to Azimuth: ', azimuth, ', Elevation: ', elevation)  #display current requested position
-			
-#			#Wait for drive to reach next position before proceeding
+	for azimuth in range(az_start, az_end):
+		if (direction % 2) == 0:  # check for sweep direction
+			# increment backwards on odd numbered loops
+			azimuth = abs(azimuth-az_end)+az_start-1
+
+		# Read RF signal from SDR
+		# grab samples for averaging
+		samples = sdr.read_samples(integration*1024)
+		signal_strength = 10*log10(var(samples))
+		print(f"Relative power: {round(signal_strength, 2)} dB")
+
+		# record signal data to array
+		sky_data[abs(elevation-el_end), (azimuth-az_end)] = signal_strength
+		# write to text file
+		np.savetxt(f"raw-data-{timestr}.txt", sky_data)
+
+		# Tell drive to go to next target position
+		command = f"P ' {azimuth} {elevation}".encode('ascii')
+		client_socket.send(command)
+		# response = client_socket.recv(100)
+		# display current requested position
+		print(f"Requesting move to Azimuth: {azimuth}, Elevation: {elevation}")
+
+# 			#Wait for drive to reach next position before proceeding
 #           #May want to keep this for Sandland version
 #			while 1:
 #				command = ('p').encode('ascii')
@@ -242,13 +246,12 @@ for elevation in range (el_start,el_end+1):
 #				if (azimuth-1) <= round(current_az) <= (azimuth+1) and (elevation-1) <= round(current_el) <= (elevation+1):
 #					break
 
-		direction=direction + 1	#change sweep direction for each elevation change
+		direction = direction + 1  # change sweep direction for each elevation change
 
-end_time = time.time() #record end time of scan
-print ('')
-print ('Scan complete! View results with: python3 dd_image.py raw-data-' + timestr +'.txt')
+end_time = time.time()  # record end time of scan
+print(f'\nScan complete! View results with: python3 dd_image.py raw-data-{timestr}.txt')
 run_time = round(end_time - start_time)
-print ('Elapsed time: ', round(run_time/60, 2), ' minutes.')      
+print(f"Elapsed time: {round(run_time/60, 2)} minutes.")
 
 #close connection and turn off SDR
 client_socket.close()

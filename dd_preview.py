@@ -27,21 +27,22 @@ while 1:
 		header, *filename_parts = str(file_name).split('-')     
 		file_name=str(filename_parts[2])
 		header, *split = file_name.split('.')
-		timestamp=(filename_parts[1]+'-'+header)
+		timestamp= f"{filename_parts[1]}-{header}"
 
-		scan_params = np.loadtxt("scan-settings-"+timestamp+".txt")
+
+		scan_params = np.loadtxt(f"scan-settings-{timestamp}.txt")
 		az_start=int(scan_params[0])
 		az_end=int(scan_params[1])
 		el_start=int(scan_params[2])
 		el_end=int(scan_params[3])
 		resolution=int(scan_params[4])
-		user_freq=str(round(scan_params[5], 2))
+		user_freq=round(scan_params[5], 2)
 		bias_tee=int(scan_params[6])
 		if bias_tee==1:
 			bias_str="On"
 		else:
 			bias_str="Off"
-		user_gain=str(scan_params[7])
+		user_gain=scan_params[7]
 
 		cleaned_data = sky_data
 		#deal with indexing offset problem
@@ -76,15 +77,15 @@ while 1:
 		plt.colorbar(location='bottom',label='RF Signal Strength (dBm)')
 		plt.xlabel("Azimuth")
 		plt.ylabel("Elevation")
-		plt.suptitle("Discovery Drive Scan "+timestamp)
-		plt.title("Frequency: " + user_freq +"MHz, Gain: " + user_gain + ", Bias Tee: "+ bias_str) 
+		plt.suptitle(f"Discovery Drive Scan {timestamp}")
+		plt.title(f"Frequency: {user_freq}Mhz, Gain: {user_gain}, Bias Tee: {bias_str}")
 
 		#close preview if file is no longer being written
 		file_mod_time = datetime.fromtimestamp(os.stat(sys.argv[1]).st_mtime) #when was file modified
 		now = datetime.today() #when is current time
 		max_delay = timedelta(seconds=5)
 		if now-file_mod_time > max_delay:
-			print(sys.argv[1], "is no longer being updated. Close image window to quit")
+			print(f"{sys.argv[1]} is no longer being updated. Close image window to quit")
 			plt.show(block=True)
 			break
 
@@ -100,9 +101,3 @@ while 1:
 	except: #sometimes the array size changes and crashes things (why?)
 		print('Preview index mismatch, retrying...')
 		continue
-
-    
-
-    
-    
-
